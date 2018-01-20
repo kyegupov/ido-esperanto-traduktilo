@@ -10,10 +10,14 @@ function senDezinenco(vorto: IoEoVorto) {
     return vorto.bazo + vorto.participSufixo;
 }
 
-function analizarIdo(s: string): IoEoVorto {
+function analizarIdo(s: string, neParticipo: boolean = false): IoEoVorto {
     let matcho = s.match(/(.*?)([aio]n?t)?(a|[io]n?|[aiou]s|ez|[aio]r|e)$/);
     if (matcho) {
-        return {bazo: matcho[1], participSufixo: matcho[2] || "", dezinenco: matcho[3]};
+        if (neParticipo) {
+            return {bazo: matcho[1] + (matcho[2] || ""), participSufixo: "", dezinenco: matcho[3]};
+        } else {
+            return {bazo: matcho[1], participSufixo: matcho[2] || "", dezinenco: matcho[3]};
+        }
     }
     return {bazo: s, participSufixo: "", dezinenco: ""};
 }
@@ -78,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         vortoIoString = vortoIoString.replace(/\./g, "").replace(/\(.*?\)/g, "").trim();
         let bazoIo = vortoIoString;
         if (deklenebla) {
-            let analizita = analizarIdo(vortoIoString);
+            let analizita = analizarIdo(vortoIoString, true);
             bazoIo = senDezinenco(analizita) + "_" + normalizarIdoDezinenco(analizita.dezinenco);
         }
 
@@ -119,6 +123,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 texto2_html += vorto;
                 continue;
             }
+
+            let mayuskulita = false;
+            if (vorto.match(/^[A-Z][^A-Z]+$/)) {
+                mayuskulita = true;
+                vorto = vorto.toLowerCase();
+            }
             
             // Projeto 1: traduktar exakte
             let traduktitaBazi = vortaroIoEo[vorto];
@@ -157,9 +167,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     traduktajo = traduktitaBazi[0] + dezinenco;
                 }
                 // texto2 += traduktajo + " ";
+                if (mayuskulita) {
+                    traduktajo = traduktajo.charAt(0).toUpperCase() + traduktajo.substr(1);
+                }
                 texto2_html += '<span style="color: green">' + traduktajo + '</span>';
             } else {
                 // texto2 += "???" + vorto + "??? ";
+                if (mayuskulita) {
+                    vorto = vorto.charAt(0).toUpperCase() + vorto.substr(1);
+                }
                 texto2_html += '<span style="color: red">???' + vorto + '???</span>';
             }
         }
