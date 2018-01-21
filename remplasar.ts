@@ -30,41 +30,48 @@ function analizarEsperanto(s: string): IoEoVorto {
     return {bazo: s, participSufixo: "", dezinenco: ""};
 }
 
-function normalizarIdoDezinenco(s: string): string {
-    if (s == "a") {
-        return "a";
-    }
-    if (s.match(/^[io]n?$/)) {
-        return "o";
-    }
-    if (s.match(/^[aiou]s|ez|[aio]r$/)) {
-        return "as";
-    }
-    if (s == "e") {
-        return "e";
-    }
-    return ""; // Devas esar eroro!
+interface Traduktar {
+    normalizarDezinenco: (string) => string;
+    traduktarDezinenco: (string) => string;
 }
 
-function traduktarDezinencoIoEo(s: string): string {
-    if (s=="a" || s=="e" || s.match(/on?|[aiou]s/)) {
-        return s;
+let traduktarIoEo : Traduktar = {
+    normalizarDezinenco: function(s: string): string {
+        if (s == "a") {
+            return "a";
+        }
+        if (s.match(/^[io]n?$/)) {
+            return "o";
+        }
+        if (s.match(/^[aiou]s|ez|[aio]r$/)) {
+            return "as";
+        }
+        if (s == "e") {
+            return "e";
+        }
+        return ""; // Devas esar eroro!
+    },
+
+    traduktarDezinenco: function(s: string): string {
+        if (s=="a" || s=="e" || s.match(/on?|[aiou]s/)) {
+            return s;
+        }
+        let m = s.match(/i(n?)/);
+        if (m) {
+            return "oj" + m[1];
+        }
+        if (s == "ez") {
+            return "u";
+        }
+        if (s == "ar") {
+            return "i";
+        }
+        let m2 = s.match(/([io])r/);
+        if (m2) {
+            return m2[1] + "nti"; // -ir -> -inti, -or -> -onti
+        }
+        return ""; // Devas esar eroro!
     }
-    let m = s.match(/i(n?)/);
-    if (m) {
-        return "oj" + m[1];
-    }
-    if (s == "ez") {
-        return "u";
-    }
-    if (s == "ar") {
-        return "i";
-    }
-    let m2 = s.match(/([io])r/);
-    if (m2) {
-        return m2[1] + "nti"; // -ir -> -inti, -or -> -onti
-    }
-    return ""; // Devas esar eroro!
 }
 
 document.addEventListener("DOMContentLoaded", function(event) {
@@ -83,7 +90,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         let bazoIo = vortoIoString;
         if (deklenebla) {
             let analizita = analizarIdo(vortoIoString, true);
-            bazoIo = senDezinenco(analizita) + "_" + normalizarIdoDezinenco(analizita.dezinenco);
+            bazoIo = senDezinenco(analizita) + "_" + traduktarIoEo.normalizarDezinenco(analizita.dezinenco);
         }
 
         console.log(bazoIo);
@@ -112,6 +119,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     document.getElementById("traduktar").onclick = function() {
 
+
+        let traduktilo = traduktarIoEo;
+
         let texto = (document.getElementById("fonto") as HTMLTextAreaElement).value;
         let vorti = texto.split(/\b/);
         let texto2 = "";
@@ -138,13 +148,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
             // Projeto 2: traduktar vortospeco
             let analizito = analizarIdo(vorto);
                 // console.log(analizito);
-                traduktitaBazi = vortaroIoEo[senDezinenco(analizito) + "_" + normalizarIdoDezinenco(analizito.dezinenco)];
-                dezinenco = traduktarDezinencoIoEo(analizito.dezinenco);
+                traduktitaBazi = vortaroIoEo[senDezinenco(analizito) + "_" + traduktilo.normalizarDezinenco(analizito.dezinenco)];
+                dezinenco = traduktilo.traduktarDezinenco(analizito.dezinenco);
 
                 if (!traduktitaBazi && analizito.participSufixo) {
                     // Projeto 3: traduktar participo uzante vorto-bazo kom verbo
                     traduktitaBazi = vortaroIoEo[analizito.bazo + "_as"];
-                    dezinenco = analizito.participSufixo + traduktarDezinencoIoEo(analizito.dezinenco);
+                    dezinenco = analizito.participSufixo + traduktilo.traduktarDezinenco(analizito.dezinenco);
                 }
 
                 if (!traduktitaBazi && analizito.dezinenco == "e") {
