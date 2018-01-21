@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
             bazoIo = senDezinenco(analizita) + "_" + traduktarIoEo.normalizarDezinenco(analizita.dezinenco);
         }
 
-        console.log(bazoIo);
+        // console.log(bazoIo);
         
         for (let vortoEoString of vortiEo) {
             if (vortoEoString === "") {
@@ -117,12 +117,15 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
     }
 
-    document.getElementById("traduktar").onclick = function() {
+    let fonto = document.getElementById("fonto") as HTMLTextAreaElement;
+    fonto.value = window.localStorage.getItem("fonto");
+    fonto.onchange = () => window.localStorage.setItem("fonto", fonto.value);
 
+    document.getElementById("traduktar").onclick = function() {
 
         let traduktilo = traduktarIoEo;
 
-        let texto = (document.getElementById("fonto") as HTMLTextAreaElement).value;
+        let texto = fonto.value;
         let vorti = texto.split(/\b/);
         let texto2 = "";
         let texto2_html = "";
@@ -169,9 +172,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
             if (traduktitaBazi) {
                 let traduktajo = "";
                 if (traduktitaBazi.length > 1) {
-                    traduktajo = "??";
+                    traduktajo = "";
                     for (let traduktitaBazo of traduktitaBazi) {
-                        traduktajo += traduktitaBazo + dezinenco + "??";
+                        traduktajo += "<div>" + traduktitaBazo + dezinenco + "</div>";
                     }
                 } else {
                     traduktajo = traduktitaBazi[0] + dezinenco;
@@ -180,13 +183,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 if (mayuskulita) {
                     traduktajo = traduktajo.charAt(0).toUpperCase() + traduktajo.substr(1);
                 }
-                texto2_html += '<span style="color: green">' + traduktajo + '</span>';
+                texto2_html += '<div class="vorto_buxo traduktita">' + traduktajo + '</div>';
             } else {
                 // texto2 += "???" + vorto + "??? ";
                 if (mayuskulita) {
                     vorto = vorto.charAt(0).toUpperCase() + vorto.substr(1);
                 }
-                texto2_html += '<span style="color: red">???' + vorto + '???</span>';
+                texto2_html += '<div class="vorto_buxo netraduktita">' + vorto + '</div>';
             }
         }
 
