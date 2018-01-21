@@ -244,6 +244,30 @@ document.addEventListener("DOMContentLoaded", function(event) {
             }
             // console.log(traduktitaBazi);
 
+            // Specala reguli
+            if (traduktilo == traduktarEoIo) {
+                if (vorto == 'kaj' || vorto == 'aŭ') {
+                    let tradukto = {'kaj':'e', 'aŭ':'o'}[vorto];
+                    let i = vortoIndexo;
+                    while (vorti[i].search(/[a-zĉĝĥĵŝŭA-ZĈĜĤĴŜŬ]/) == -1 && i<vorti.length) {
+                        i++;
+                    }
+                    if (i < vorti.length) {
+                        let nextaVorto = vorti[i];
+                        if (nextaVorto.charAt(0).match(/aeiou/)) {
+                            tradukto = tradukto + "d";
+                        }
+                        traduktitaBazi = [tradukto];
+                        dezinenco = "";
+                    }
+                }
+                if (vorto == "la") {
+                    // "le" es tre rara
+                    traduktitaBazi = ["la"];
+                    dezinenco = "";
+                }
+            }
+
             if (traduktitaBazi) {
 
                 if (mayuskulita) {
