@@ -1,0 +1,48 @@
+div, h3 {
+    font-family: sans-serif;
+}
+
+#rezulto_kontenaro {
+    min-height: 200px;
+}
+
+#rezulto_textala {
+    min-height: 200px;
+}
+
+.vorto_buxo {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.vorto_buxo.traduktita div {
+    border: 1px solid #555;
+    background-color: #ca8;
+    margin-top: 1px;
+    margin-bottom: 1px;
+}
+
+.vorto_buxo.traduktita div.neselektita {
+    background-color: #bbb;
+}
+
+.vorto_buxo.traduktita div.selektita {
+    background-color: #9c9;
+}
+
+.vorto_buxo.netraduktita {
+    border: 1px solid #555;
+    background-color: #faa;
+}
+
+#rezulto_textala .traduktita {
+    color: green;
+}
+
+#rezulto_textala .necerta {
+    color: brown;
+}
+
+#rezulto_textala .netraduktita {
+    color: red;
+}
