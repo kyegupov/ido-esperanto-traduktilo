@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var vortaroEoIo : { [klefo: string]: string[]; } = {};
 
     for (let vortoIoString of Object.keys(vortaroIoEoKruda)) {
-        let vortiEo = vortaroIoEoKruda[vortoIoString].replace(/\(.*?\)/g, "").split(/[,;] /g);
+        let vortiEo = vortaroIoEoKruda[vortoIoString].replace(/\(.*?\)/g, "").replace(/\[.*?\]/g, "").split(/[,;] /g);
         let deklenebla = vortoIoString.indexOf(".") >= 0;
         // console.log(vortoIoString);
         // console.log(deklenebla);
@@ -117,6 +117,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         }
     }
 
+    // Traduktar-butono
+
     let fonto = document.getElementById("fonto") as HTMLTextAreaElement;
     fonto.value = window.localStorage.getItem("fonto");
     fonto.onchange = () => window.localStorage.setItem("fonto", fonto.value);
@@ -127,13 +129,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         let texto = fonto.value;
         let vorti = texto.split(/\b/);
-        let texto2 = "";
-        let texto2_html = "";
+        let rezultoVisual = "";
+        let rezultoTextal = "";
+
+        let vortoIndexo = 0;
 
         for (var vorto of vorti) {
+            vortoIndexo++;
 
             if (vorto.search(/[a-zA-Z]/) == -1) { // ne esas vorto
-                texto2_html += vorto;
+                rezultoVisual += vorto;
+                rezultoTextal += vorto;
                 continue;
             }
 
@@ -170,30 +176,63 @@ document.addEventListener("DOMContentLoaded", function(event) {
             // console.log(traduktitaBazi);
 
             if (traduktitaBazi) {
-                let traduktajo = "";
-                if (traduktitaBazi.length > 1) {
-                    traduktajo = "";
-                    for (let traduktitaBazo of traduktitaBazi) {
-                        traduktajo += "<div>" + traduktitaBazo + dezinenco + "</div>";
-                    }
-                } else {
-                    traduktajo = traduktitaBazi[0] + dezinenco;
-                }
-                // texto2 += traduktajo + " ";
+
                 if (mayuskulita) {
-                    traduktajo = traduktajo.charAt(0).toUpperCase() + traduktajo.substr(1);
+                    for (let i of Object.keys(traduktitaBazi)) {
+                        traduktitaBazi[i] = traduktitaBazi[i].charAt(0).toUpperCase() + traduktitaBazi[i].substr(1);
+                    }
                 }
-                texto2_html += '<div class="vorto_buxo traduktita">' + traduktajo + '</div>';
+
+                let klaso = "";
+                
+                let traduktajoBuxi = "";
+                let traduktajoTextala = "";
+                if (traduktitaBazi.length > 1) {
+                    traduktajoTextala = "?";
+                    for (let traduktitaBazo of traduktitaBazi) {
+                        traduktajoBuxi += `<div class="traduktvarianto">${traduktitaBazo}${dezinenco}</div>`;
+                        traduktajoTextala += `${traduktitaBazo}${dezinenco}?`;
+                    }
+                    klaso = "necerta";
+                } else {
+                    traduktajoBuxi = traduktitaBazi[0] + dezinenco;
+                    traduktajoTextala = traduktitaBazi[0] + dezinenco;
+                    klaso = "traduktita";
+                }
+                // console.log(traduktajoTextala);
+                rezultoVisual += `<div class="vorto_buxo traduktita" id="vb_${vortoIndexo}">${traduktajoBuxi}</div>`;
+                rezultoTextal += `<span id="txt_${vortoIndexo}" class="${klaso}">${traduktajoTextala}</span>`;
             } else {
-                // texto2 += "???" + vorto + "??? ";
+                let klaso = "netraduktita";
                 if (mayuskulita) {
                     vorto = vorto.charAt(0).toUpperCase() + vorto.substr(1);
                 }
-                texto2_html += '<div class="vorto_buxo netraduktita">' + vorto + '</div>';
+                rezultoVisual += `<div class="vorto_buxo netraduktita" id="vb_${vortoIndexo}">${vorto}</div>`;
+                rezultoTextal += `<span id="txt_${vortoIndexo}" class="${klaso}">?${vorto}?</span>`;
             }
         }
 
-        // document.getElementById("rezulto").value = texto2;
-        document.getElementById("rezulto_koloroza").innerHTML = texto2_html;
+        document.getElementById("rezulto_koloroza").innerHTML = rezultoVisual;
+        document.getElementById("rezulto_textala").innerHTML = rezultoTextal;
+
+        let varianti = document.getElementsByClassName("traduktvarianto");
+        for (let i=0; i<varianti.length; i++) {
+            let varel = varianti[i] as HTMLDivElement;
+            varel.onclick = function(event) {
+                let genitoro = this.parentNode as HTMLDivElement;
+                for (let j=0; j<genitoro.childNodes.length; j++) {
+                    let frato = genitoro.childNodes[j] as HTMLDivElement;
+                    frato.classList.remove("selektita");
+                    frato.classList.add("neselektita");
+                }
+
+                this.classList.add("selektita");
+                let idNumero = parseInt(genitoro.getAttribute("id").substr(3));
+                let textalaVorto = document.getElementById("txt_" + idNumero);
+                textalaVorto.classList.remove("necerta");
+                textalaVorto.classList.add("traduktita");
+                textalaVorto.innerText = this.innerText;
+            }
+        }
     }
 });
