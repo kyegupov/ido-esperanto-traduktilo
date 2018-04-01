@@ -23,7 +23,7 @@ function analizarIdo(s: string, neParticipo: boolean = false): IoEoVorto {
 }
 
 function analizarEsperanto(s: string, neParticipo: boolean = false): IoEoVorto {
-    let matcho = s.match(/(.*?)([aio]n?t)?([ao]j?n?|[aio]s|u|i|e)$/);
+    let matcho = s.match(/(.*?)([aio]n?t)?([ao]j?n?|[aiou]s|u|i|e)$/);
     if (matcho) {
         if (neParticipo) {
             return {bazo: matcho[1] + (matcho[2] || ""), participSufixo: "", dezinenco: matcho[3]};
