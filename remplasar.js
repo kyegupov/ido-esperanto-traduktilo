@@ -16,7 +16,7 @@ function analizarIdo(s, neParticipo) {
 }
 function analizarEsperanto(s, neParticipo) {
     if (neParticipo === void 0) { neParticipo = false; }
-    var matcho = s.match(/(.*?)([aio]n?t)?([ao]j?n?|[aio]s|u|i|e)$/);
+    var matcho = s.match(/(.*?)([aio]n?t)?([ao]j?n?|[aiou]s|u|i|e)$/);
     if (matcho) {
         if (neParticipo) {
             return { bazo: matcho[1] + (matcho[2] || ""), participSufixo: "", dezinenco: matcho[3] };
