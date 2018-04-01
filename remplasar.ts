@@ -271,9 +271,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
             if (traduktitaBazi) {
 
                 if (mayuskulita) {
+                    let traduktitaBazi2 = [];
                     for (let i of Object.keys(traduktitaBazi)) {
-                        traduktitaBazi[i] = traduktitaBazi[i].charAt(0).toUpperCase() + traduktitaBazi[i].substr(1);
+                        traduktitaBazi2[i] = traduktitaBazi[i].charAt(0).toUpperCase() + traduktitaBazi[i].substr(1);
                     }
+                    traduktitaBazi = traduktitaBazi2;
                 }
 
                 let klaso = "";

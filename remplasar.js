@@ -227,10 +227,12 @@ document.addEventListener("DOMContentLoaded", function (event) {
             }
             if (traduktitaBazi) {
                 if (mayuskulita) {
+                    var traduktitaBazi2 = [];
                     for (var _a = 0, _b = Object.keys(traduktitaBazi); _a < _b.length; _a++) {
                         var i = _b[_a];
-                        traduktitaBazi[i] = traduktitaBazi[i].charAt(0).toUpperCase() + traduktitaBazi[i].substr(1);
+                        traduktitaBazi2[i] = traduktitaBazi[i].charAt(0).toUpperCase() + traduktitaBazi[i].substr(1);
                     }
+                    traduktitaBazi = traduktitaBazi2;
                 }
                 var klaso = "";
                 var traduktajoBuxi = "";
