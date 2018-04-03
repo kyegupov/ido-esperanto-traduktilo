@@ -295,8 +295,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     klaso = "traduktita";
                 }
                 // console.log(traduktajoTextala);
-                rezultoVisual += `<div class="vorto_buxo traduktita" id="vb_${vortoIndexo}">${traduktajoBuxi}</div>`;
-                rezultoTextal += `<span id="txt_${vortoIndexo}" class="${klaso}">${traduktajoTextala}</span>`;
+                rezultoVisual += `<div class="vorto_buxo traduktita" id="vb_${vortoIndexo}" title="${vorto}">${traduktajoBuxi}</div>`;
+                rezultoTextal += `<span id="txt_${vortoIndexo}" class="${klaso}" title="${vorto}">${traduktajoTextala}</span>`;
             } else {
                 let klaso = "netraduktita";
                 if (mayuskulita) {
